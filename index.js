@@ -16,9 +16,7 @@ app.use(cors());
 const MPESA_TOKEN_URL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
 const MPESA_STK_PUSH_URL = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
 
-app.get("/", (req, res) => {
-    res.send("<h1>Hello Kib</h1>");
-});
+
 
 const generateToken = async () => {
     try {
