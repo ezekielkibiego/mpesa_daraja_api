@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STK Push</title>
+</head>
+<body>
+    <h1>STK Push</h1>
+    <form id="stkForm">
+        <label for="phone">Phone Number:</label>
+        <input type="text" id="phone" name="phone" required pattern="[0-9]{10}">
+        <br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" required min="1">
+        <br>
+        <button type="submit">Push STK</button>
+    </form>
+
+    <div id="response"></div>
+
+    <script src="script.js">
+    </script>
+</body>
+</html>
