@@ -10,14 +10,22 @@ app.listen(port, () => {
 });
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+// Middleware to log all incoming requests
+app.use((req, res, next) => {
+    console.log("Incoming request:");
+    console.log(req.method, req.url);
+    console.log("Request headers:", req.headers);
+    console.log("Request body:", req.body);
+    next();
+});
 
 const MPESA_TOKEN_URL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
 const MPESA_STK_PUSH_URL = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
 
-
-
+// Function to generate M-Pesa access token
 const generateToken = async () => {
     try {
         const secret = process.env.MPESA_SECRET_KEY;
@@ -34,13 +42,14 @@ const generateToken = async () => {
     }
 };
 
+// Global error handler middleware
 const errorHandler = (err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send("Something went wrong!");
 };
-
 app.use(errorHandler);
 
+// STK push endpoint
 app.post("/stk", async (req, res, next) => {
     try {
         const token = await generateToken();
@@ -60,7 +69,7 @@ app.post("/stk", async (req, res, next) => {
             "PartyA": `254${phone}`,
             "PartyB": shortcode,
             "PhoneNumber": `254${phone}`,
-            "CallBackURL": "https://mydomain.com/pat",
+            "CallBackURL": "https://d989-105-160-87-189.ngrok-free.app/callback",
             "AccountReference": `254${phone}`,
             "TransactionDesc": "Test"
         }, {
@@ -73,4 +82,15 @@ app.post("/stk", async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+});
+
+// Callback endpoint
+app.post("/callback", (req, res) => {
+    const callbackData = req.body;
+    console.log(callbackData); 
+    if (!callbackData.Body.CallbackMetadata) {
+        console.log(callbackData)
+        res.json("Ok")
+    }
+    res.sendStatus(200); 
 });
